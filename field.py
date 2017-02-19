@@ -10,7 +10,6 @@ def generate_field():
     ships = [[None] * 10 for i in range(10)]
     for i in range(4, 0, -1):
         for j in range(5 - i):
-            #print(i, j)
             while True:
                 x = randint(0, 10 - i)
                 y = randint(0, 10 - i)
@@ -20,7 +19,6 @@ def generate_field():
                 if isEmpty(x, y, i, x1, y1, ships):
                     break
             ship = Ship(length)
-            # ship.bow = (x, y) if length > 1 else (y, x)
             ship.bow = (y, x)
             ship.horizontal = True if x1 else False
             for n in range(-1, 1 + i):
@@ -72,17 +70,24 @@ class Field:
         self.shots = set()
 
     def shoot_at(self, coordinates):
+        '''
+        Checks whether the ship was destroyed, hit, or whether the player missed.
+        '''
+        if coordinates in self.shots:
+            return -1
         self.shots.add(coordinates)
         if isinstance(self._ships[coordinates[0]][coordinates[1]], Ship):
             destroyed = self._ships[coordinates[0]][coordinates[1]].shoot_at(coordinates)
             if destroyed:
-                print('what the fuck')
                 return 2
             return True
         else:
             return False
 
     def field_with_ships(self):
+        '''
+        Returns the field where the ships are shown.
+        '''
         a = '  A B C D E F G H I J\n'
         for i in range(10):
             a += str(i + 1) + ' ' if i + 1 < 10 else str(i + 1)
@@ -101,6 +106,9 @@ class Field:
         return a
 
     def field_without_ships(self):
+        '''
+        Returns the field where the ships are hidden.
+        '''
         a = '  A B C D E F G H I J\n'
         for i in range(10):
             a += str(i + 1) + ' ' if i + 1 < 10 else str(i + 1)

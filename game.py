@@ -19,13 +19,23 @@ class Game:
     def field_with_ships(self, player):
         return self._field[player].field_with_ships()
 
+    def shoot_at(self, player, coordinates):
+        return self._field[player].shoot_at(coordinates)
+
     def game(self):
+        '''
+        The main function that determines how the game is played.
+        '''
+        count1 = 0
+        count2 = 0
         while(True):
-            count1 = 0
-            count2 = 0
-            print(self._field[self._current_player].field_with_ships(),
-                  self._field[1-self._current_player].field_without_ships(), sep='\n\n')
-            res = self._field[1-self._current_player].shoot_at(self.read_position(self._current_player))
+            print(self.field_with_ships(self._current_player),
+                  self.field_without_ships(1 - self._current_player), sep='\n\n')
+            res = -1
+            while res == -1:
+                res = self.shoot_at(1 - self._current_player, self.read_position(self._current_player))
+                if res == -1:
+                    print("Try again.")
             if res == 2:
                 print("Well done, you destroyed a ship!")
                 if self._current_player == 0:
@@ -37,13 +47,11 @@ class Game:
             else:
                 print("Ouch, you missed!")
                 self._current_player = 1 - self._current_player
-                continue
+            print(count1, count2)
             if count1 == 10:
-                print("{} wins".format(self._players[0]))
-                break
+                return "\n{} wins!".format(self._players[0])
             if count2 == 10:
-                print("{} wins".format(self._players[1]))
-                break
+                return "\n{} wins!".format(self._players[1])
 
 if __name__ == "__main__":
     result = Game()
